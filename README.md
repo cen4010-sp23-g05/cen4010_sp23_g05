@@ -3,6 +3,6 @@ A repository for Group 5 in Principles of Software Engineering (CEN4010), spring
 Contributors:
 - Ethan Curtis
 - Kevin Horta
-- (CONTRIBUTOR)
+- Bryan Cooke
 - (CONTRIBUTOR)
 - (CONTRIBUTOR)
