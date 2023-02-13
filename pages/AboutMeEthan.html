@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <title>Ethan's Page</title>
+    <style>
+      body {
+        overflow: hidden;
+      }
+
+      #orbiter-container {
+        position: relative;
+        margin: 5%;
+        height: 80vh;
+      }
+
+      .planets {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0);
+        border-radius: 50%;
+      }
+
+      .myColumns {
+        flex-direction: column; 
+        width: 32vw;
+        padding: 1vw;
+      }
+    </style>
+    <script>
+      const numPlanetsX = 12,
+        numPlanetsY = 8;
+      const minRadius = 10,
+        maxRadius = 100;
+      const msInterval = 20;
+      const gravConstant = 0.4;
+      const sunMass = 10000;
+      const timeScalar = 0.25;
+
+      class Point {
+        constructor(x, y) {
+          this.x = isNaN(x) ? 0 : x;
+          this.y = isNaN(y) ? 0 : y;
+        }
+      }
+
+      class Planet {
+        constructor(p, mass, vel = new Point(0, 0)) {
+          this.p = p;
+          this.mass = mass;
+          this.vel = vel;
+        }
+      }
+
+      $(document).ready(function () {
+        const container = document.getElementById("orbiter-container");
+        let nidx = numPlanetsX * numPlanetsY;
+        var ps = new Array(nidx);
+
+        for (let x = 0; x < numPlanetsX; x++) {
+          for (let y = 0; y < numPlanetsY; y++) {
+            let tPlanet = document.createElement("div");
+            let radius = randomIntFromInterval(minRadius, maxRadius);
+            let idx = x + y * numPlanetsX;
+
+            ps[idx] = new Planet(
+              new Point(
+                (x * container.offsetWidth) / (numPlanetsX - 1),
+                (y * container.offsetHeight) / (numPlanetsY - 1)
+              ),
+              radius,
+              new Point(
+                randomIntFromInterval(-300, 300),
+                randomIntFromInterval(-300, 300)
+              )
+            );
+
+            tPlanet.style.cssText = `
+                left: ${ps[idx].p.x - radius / 2}px;
+                top: ${ps[idx].p.y - radius / 2}px;
+                width: ${radius/10}vh; height: ${radius/10}vh;
+            `;
+            tPlanet.classList.add("planets");
+            container.appendChild(tPlanet);
+          }
+        }
+
+        let dTime = msInterval * timeScalar / 1000;
+        let sun = new Planet(
+          new Point(container.offsetWidth / 2, container.offsetHeight / 2),
+          sunMass
+        );
+
+        setInterval(function () {
+          for (let idx = 0; idx < ps.length; idx++) {
+            // Update velocity, then position for every object
+            for (let idx2 = 0; idx2 < ps.length; idx2++) {
+              if (idx == idx2) continue;
+
+              let f = forceBetweenTwoPlanets(ps[idx2], ps[idx]);
+              ps[idx].vel.x += f.x * dTime;
+              ps[idx].vel.y += f.y * dTime;
+            }
+            let f = forceBetweenTwoPlanets(sun, ps[idx]);
+            ps[idx].vel.x += f.x * dTime;
+            ps[idx].vel.y += f.y * dTime;
+
+            ps[idx].p.x += ps[idx].vel.x * dTime;
+            ps[idx].p.y += ps[idx].vel.y * dTime;
+
+            let radius = parseInt(container.children[idx].style.height);
+            container.children[idx].style.left = `${ps[idx].p.x - radius / 2}px`;
+            container.children[idx].style.top = `${ps[idx].p.y - radius / 2}px`;
+            container.children[idx].style.background = rgba(0, 0, 0, velToA(ps[idx].vel) * 0.05);
+          }
+        }, msInterval);
+      });
+
+      function randomIntFromInterval(min, max) {
+        // min and max included
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+
+      function forceBetweenTwoPlanets(p1, p2) {
+        let dx = p1.p.x - p2.p.x,
+          dy = p1.p.y - p2.p.y;
+
+        if (dx == 0 && dy == 0) return Point(0, 0);
+
+        let dpoint = new Point(dx, dy);
+        let dist = dx * dx + dy * dy;
+
+        let f1d = (gravConstant * p1.mass * p2.mass) / dist;
+        dpoint.x *= f1d;
+        dpoint.y *= f1d;
+        return dpoint;
+      }
+
+      function velToA(v) {
+        let vmSqr = v.x * v.x + v.y * v.y;
+        return 1 / (1 + Math.exp(-vmSqr / 70000));
+      }
+
+      function rgba(r, g, b, a) {
+        return `rgba(${r},${g},${b},${a})`;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="orbiter-container"></div>
+    <div
+      style="
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100vw;
+        height: 100vh;
+        z-index: 100;
+        flex-direction: column;
+        padding: 2vw;
+      "
+      class="d-flex justify-content-center"
+    >
+      <h1 style="font-variant: small-caps; font-size:40pt">Ethan Curtis' Webpage</h1>
+      <div class="d-flex justify-content-start">
+        <div class="d-flex justify-content-start myColumns">
+          <h1>About Me</h1>
+          <p>
+            My name is Ethan Curtis. I am a computer science major at FAU, and am intending to graduate with a bachelor's of science in the fall of 2023.
+            My hobbies include writing code, playing piano, listening to audiobooks, and enjoying video games.
+          </p>
+          <p>
+            I like to code small projects for fun, such as the planet simulation you see in the background of this page, and 
+            I am currently working on a game in Unity (a game engine).
+          </p>
+        </div>
+        <div class="d-flex justify-content-start myColumns">
+          <h2>
+            Some programming languages I know:
+          </h2>
+          <ul>
+            <li>C/C++</li>
+            <li>C#</li>
+            <li>Nodejs</li>
+            <li>Python</li>
+            <li>HTML/CSS/JS</li>
+            <li>and others.</li>
+          </ul>
+        </div>
+        <div class="d-flex justify-content-start myColumns">
+          <h3>Here is the outcome of one of my projects:</h3>
+          <img src="../images/imagesEthan/mugshotcomparison.png" style="object-fit: contain;">
+          <figcaption style="color: grey; font-size: small; text-align: center;">
+            Two images of me: the right one is the original, and the left is the output.
+          </figcaption>
+          <p>
+            The code which I wrote takes in an image, analyzes it using a genetic algorithm, then prints an approximation of the original using only colored circles. 
+            I feel that it gives a pretty cool looking effect.
+          </p>
+        </div>
+      </div>
+      <a href="../index.html" style="width: 150px;"><button type="button" class="btn btn-dark" style="width: 100%">Return to Home</button></a>
+    </div>
+  </body>
+</html>
