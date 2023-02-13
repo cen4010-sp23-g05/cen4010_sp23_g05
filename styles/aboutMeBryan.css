@@ -1,0 +1,66 @@
+html, body {
+    
+}
+
+.bookTemplate{
+    height: 200px;
+    width: 140px;
+}
+
+.imageAndName {
+    margin-bottom: 15px;
+}
+a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: black;
+    }
+    
+.profilePictureBryan{
+        height: auto;
+        width: 200px;
+    }
+
+
+
+h2 {
+    font-weight:normal;
+}
+
+h3 {
+    font-weight:normal;
+}
+
+.titleAndSubtitle{
+    margin-bottom: -25px;
+}
+.subtitle{
+    font-size: 18px;
+    margin-top: -20px;
+}
+
+.bodyDiv{
+    display: flex;
+    height: 100vh;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: -10vh;
+    
+
+}
+.leftHalf{
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    font-size: 18px;
+
+
+}
+.rightHalf{
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    padding-left: 25vw;
+}
