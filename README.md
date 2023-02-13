@@ -4,5 +4,5 @@ Contributors:
 - Ethan Curtis
 - Kevin Horta
 - Bryan Cooke
-- (CONTRIBUTOR)
+- Marco Parucho
 - (CONTRIBUTOR)
