@@ -5,4 +5,4 @@ Contributors:
 - Kevin Horta
 - Bryan Cooke
 - Marco Parucho
-- (CONTRIBUTOR)
+- Oliver Pennanen
